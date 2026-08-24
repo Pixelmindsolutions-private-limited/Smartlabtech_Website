@@ -172,7 +172,7 @@ export default function Support() {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('https://smartlabtechbackend-p5h6.onrender.com/api/supportpage', {
+      const response = await fetch('http://187.127.219.43:3000/api/supportpage', {
         headers: {
           'Authorization': token ? `Bearer ${token}` : '',
           'Content-Type': 'application/json'

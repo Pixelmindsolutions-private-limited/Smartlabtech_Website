@@ -151,11 +151,18 @@ export default function Navbar() {
     setCatLoading(true);
     setCatError(null);
     try {
-      const res = await fetch('https://smartlabtechbackend-p5h6.onrender.com/api/categories/with-products');
+      const res = await fetch('http://187.127.219.43:3000/api/categories/with-products');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
-        const active = json.data.filter(c => c.isActive);
+        const active = json.data
+          .filter(c => c.isActive)
+          .map(c => ({
+            ...c,
+            // API returns products newest-first; reverse so the first product
+            // added (highest priority) shows first in the menu.
+            products: c.products ? [...c.products].reverse() : c.products,
+          }));
         setCategories(active);
         if (active.length > 0) setActiveCat(active[0]._id);
       } else {
@@ -174,7 +181,7 @@ export default function Navbar() {
     try {
       setSearchLoading(true);
       setSearchError(null);
-      const res = await fetch('https://smartlabtechbackend-p5h6.onrender.com/api/products/suggestions?limit=6');
+      const res = await fetch('http://187.127.219.43:3000/api/products/suggestions?limit=6');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       if (json.success && Array.isArray(json.data.products)) {
@@ -217,7 +224,7 @@ export default function Navbar() {
     try {
       setSearchLoading(true);
       setSearchError(null);
-      const res = await fetch(`https://smartlabtechbackend-p5h6.onrender.com/api/products/search/all?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`http://187.127.219.43:3000/api/products/search/all?q=${encodeURIComponent(query)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
@@ -948,6 +955,7 @@ export default function Navbar() {
               </div>
             </div>
           </motion.nav>
+        </div>
 
           {/* Products Dropdown */}
           <AnimatePresence>
@@ -960,7 +968,6 @@ export default function Navbar() {
                   onMouseLeave={handleDropLeave}
                 />
                 <motion.div
-                  ref={dropZoneRef}
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
@@ -970,7 +977,7 @@ export default function Navbar() {
                   className="fixed left-0 right-0 z-[999] flex justify-center px-4"
                   style={{ top: NAV_H + 8 }}
                 >
-                  <div className="w-full max-w-[1000px] bg-white rounded-2xl border border-slate-200 shadow-[0_20px_60px_rgba(15,35,86,0.18)] overflow-hidden">
+                  <div ref={dropZoneRef} className="w-full max-w-[1000px] bg-white rounded-2xl border border-slate-200 shadow-[0_20px_60px_rgba(15,35,86,0.18)] overflow-hidden">
                     {/* Header */}
                     <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#0f2356] to-[#2563eb]">
                       <div>
@@ -1146,7 +1153,6 @@ export default function Navbar() {
               </>
             )}
           </AnimatePresence>
-        </div>
 
         {/* MOBILE DRAWER */}
         <AnimatePresence>

@@ -2,3 +2,61 @@ html,
 body {
   overflow-x: hidden;
 }
+.cookie-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 99999;
+  padding: 20px;
+}
+
+.cookie-banner {
+  width: 100%;
+  max-width: 700px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.cookie-banner h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: #0f2356;
+}
+
+.cookie-banner p {
+  margin: 0 0 20px;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.cookie-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cookie-actions button {
+  border: none;
+  border-radius: 8px;
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cookie-reject {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.cookie-accept {
+  background: #0f2356;
+  color: white;
+}

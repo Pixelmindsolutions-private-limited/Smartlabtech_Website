@@ -1,14 +1,13 @@
 // src/components/BrandMarquee.js
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
 
 export default function BrandMarquee() {
     const [brands, setBrands] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('https://smartlabtechbackend-p5h6.onrender.com/api/brands')
+        fetch('http://187.127.219.43:3000/api/brands')
             .then(res => res.json())
             .then(data => {
                 if (data.success && data.data) {
@@ -19,7 +18,7 @@ export default function BrandMarquee() {
             .catch(() => setLoading(false));
     }, []);
 
-    if (loading) return <div className="py-8 text-center"><Loader2 className="animate-spin mx-auto text-blue-600" /></div>;
+    if (loading) return null;
     if (brands.length === 0) return null;
 
     const duplicatedBrands = [...brands, ...brands, ...brands];

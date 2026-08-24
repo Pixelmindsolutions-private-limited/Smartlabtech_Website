@@ -26,7 +26,7 @@ const BlogsPage = () => {
 
     const fetchBlogHero = async () => {
         try {
-            const response = await fetch('https://smartlabtechbackend-p5h6.onrender.com/api/blogs');
+            const response = await fetch('http://187.127.219.43:3000/api/blogs');
             const data = await response.json();
             if (data.success && data.data?.blogHero) {
                 setBlogHero(data.data.blogHero);
@@ -39,7 +39,7 @@ const BlogsPage = () => {
     const fetchBlogs = async () => {
         try {
             setLoading(true);
-            let url = 'https://smartlabtechbackend-p5h6.onrender.com/api/blogs/all?';
+            let url = 'http://187.127.219.43:3000/api/blogs/all?';
             const params = new URLSearchParams();
             if (searchTerm) params.append('search', searchTerm);
             if (activeCategory !== 'All') params.append('category', activeCategory);
@@ -63,8 +63,8 @@ const BlogsPage = () => {
     const fetchFilters = async () => {
         try {
             const [categoriesRes, tagsRes] = await Promise.all([
-                fetch('https://smartlabtechbackend-p5h6.onrender.com/api/blogs/categories'),
-                fetch('https://smartlabtechbackend-p5h6.onrender.com/api/blogs/tags')
+                fetch('http://187.127.219.43:3000/api/blogs/categories'),
+                fetch('http://187.127.219.43:3000/api/blogs/tags')
             ]);
             const categoriesData = await categoriesRes.json();
             const tagsData = await tagsRes.json();

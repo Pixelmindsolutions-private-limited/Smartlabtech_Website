@@ -69,7 +69,7 @@ const AboutPage = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('https://smartlabtechbackend-p5h6.onrender.com/api/aboutpage', {
+      const response = await fetch('http://187.127.219.43:3000/api/aboutpage', {
         headers: {
           'Authorization': token ? `Bearer ${token}` : '',
           'Content-Type': 'application/json'

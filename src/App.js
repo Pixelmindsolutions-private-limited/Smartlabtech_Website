@@ -21,6 +21,7 @@ import TermsOfService from './Policies/TermsOfService.js';
 import CookiePolicy from './Policies/CookiePolicy.js';
 import SmartApplicationLab from './pages/SmartApplicationLab.js';
 import NotFound from './views/PageNotFound.js';
+import CookieConsent from './components/CookieConsent.js';
 
 const App = () => {
   return (
@@ -50,6 +51,7 @@ const App = () => {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+       <CookieConsent />
     </>
   )
 }

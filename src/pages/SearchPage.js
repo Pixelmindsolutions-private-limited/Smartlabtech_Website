@@ -10,7 +10,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 // API Base URL
-const API_BASE_URL = 'https://smartlabtechbackend-p5h6.onrender.com/api';
+const API_BASE_URL = 'http://187.127.219.43:3000/api';
 
 // Premium Search Bar Component
 const PremiumSearchBar = ({ initialQuery, onSearch, onClear }) => {

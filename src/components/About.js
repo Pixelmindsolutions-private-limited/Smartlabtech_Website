@@ -25,7 +25,7 @@ export default function About({ id }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("https://smartlabtechbackend-p5h6.onrender.com/api/homepage/about")
+    fetch("http://187.127.219.43:3000/api/homepage/about")
       .then((res) => res.json())
       .then((json) => {
         if (json.success && json.data) {
@@ -36,13 +36,7 @@ export default function About({ id }) {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) {
-    return (
-      <section id={id} className="bg-blue-50 py-8 sm:py-10 lg:py-16 min-h-[300px] flex items-center justify-center">
-        <div className="w-10 h-10 rounded-full border-4 border-sky-400 border-t-transparent animate-spin" />
-      </section>
-    );
-  }
+  if (loading) return null;
 
   if (!data || !data.isActive) return null;
 

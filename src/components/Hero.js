@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../modal/Modal";
 import { QuoteForm } from "../modal/QuoteForm";
@@ -16,17 +16,26 @@ export default function Hero({ id }) {
   const [direction, setDirection] = useState(1);
   const [displayText, setDisplayText] = useState("");
   const [isPaused, setIsPaused] = useState(false);
-
-  const [openQuote, setOpenQuote] = useState();
+  const [openQuote, setOpenQuote] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const currentRef = useRef(current);
-  useEffect(() => { currentRef.current = current; }, [current]);
-
+  const intervalRef = useRef(null);
   const navigate = useNavigate();
+
+  // Update currentRef when current changes
+  useEffect(() => {
+    currentRef.current = current;
+  }, [current]);
+
+  // Reset image error when slide changes
+  useEffect(() => {
+    setImgError(false);
+  }, [current]);
 
   // Fetch hero slides from API
   useEffect(() => {
-    fetch("https://smartlabtechbackend-p5h6.onrender.com/api/homepage/hero")
+    fetch("http://187.127.219.43:3000/api/homepage/hero")
       .then((res) => res.json())
       .then((json) => {
         if (json.success && json.data.length > 0) {
@@ -37,6 +46,7 @@ export default function Hero({ id }) {
       .finally(() => setLoading(false));
   }, []);
 
+  // Stable navigation functions
   const next = useCallback(() => {
     if (!slides.length) return;
     setDirection(1);
@@ -49,39 +59,58 @@ export default function Hero({ id }) {
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
   }, [slides.length]);
 
-  const go = useCallback((i) => {
-    setDirection(i > currentRef.current ? 1 : -1);
-    setCurrent(i);
-  }, []);
+  const go = useCallback((index) => {
+    if (!slides.length || index === currentRef.current) return;
+    setDirection(index > currentRef.current ? 1 : -1);
+    setCurrent(index);
+  }, [slides.length]);
 
+  // Auto-slide functionality - SINGLE SOURCE OF TRUTH
   useEffect(() => {
-    if (isPaused || !slides.length) return;
-    const id = setInterval(next, 5000);
-    return () => clearInterval(id);
-  }, [isPaused, next, slides.length]);
+    // Don't start if loading or no slides
+    if (loading || !slides.length) return;
+
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    // Only start interval if not paused
+    if (!isPaused) {
+      intervalRef.current = setInterval(() => {
+        next();
+      }, 5000);
+    }
+
+    // Cleanup function
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [loading, slides.length, isPaused, next]); // Includes isPaused dependency
 
   // Typing effect
   useEffect(() => {
     if (!slides.length) return;
-    let i = 0;
     const text = slides[current]?.title || "";
     setDisplayText("");
+    if (!text) return;
+    
+    let i = 0;
     const typing = setInterval(() => {
-      setDisplayText(text.slice(0, i + 1));
       i++;
-      if (i === text.length) clearInterval(typing);
+      setDisplayText(text.slice(0, i));
+      if (i >= text.length) clearInterval(typing);
     }, 38);
+    
     return () => clearInterval(typing);
   }, [current, slides]);
 
-  if (loading) {
-    return (
-      <section id={id} className="relative flex items-center bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden min-h-[400px] justify-center">
-        <div className="w-10 h-10 rounded-full border-4 border-sky-400 border-t-transparent animate-spin" />
-      </section>
-    );
-  }
-
+  // Loading state
+  if (loading) return null;
   if (!slides.length) return null;
 
   const slide = slides[current];
@@ -112,24 +141,40 @@ export default function Hero({ id }) {
               const startX = e.touches[0].clientX;
               const handleEnd = (eEnd) => {
                 const diff = startX - eEnd.changedTouches[0].clientX;
-                if (Math.abs(diff) > 40) diff > 0 ? next() : prev();
+                if (Math.abs(diff) > 40) {
+                  diff > 0 ? next() : prev();
+                }
               };
               e.currentTarget.addEventListener("touchend", handleEnd, { once: true });
             }}
           >
             <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl aspect-[4/3] xs:aspect-[16/10] sm:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/11]">
               <AnimatePresence mode="wait">
-                <motion.img
-                  key={current}
-                  src={slide.image}
-                  alt={slide.title}
-                  title={slide.title}
-                  initial={{ scale: 1.06, opacity: 0, x: direction > 0 ? 30 : -30 }}
-                  animate={{ scale: 1, opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: direction > 0 ? -30 : 30 }}
-                  transition={{ duration: 0.55, ease: "easeInOut" }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+                {imgError ? (
+                  <motion.div
+                    key={current}
+                    initial={{ scale: 1.06, opacity: 0, x: direction > 0 ? 30 : -30 }}
+                    animate={{ scale: 1, opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: direction > 0 ? -30 : 30 }}
+                    transition={{ duration: 0.55, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-sky-100"
+                  >
+                    <span className="text-6xl opacity-50" role="img" aria-label="Image unavailable">🧪</span>
+                  </motion.div>
+                ) : (
+                  <motion.img
+                    key={current}
+                    src={slide.image}
+                    alt={slide.title}
+                    title={slide.title}
+                    initial={{ scale: 1.06, opacity: 0, x: direction > 0 ? 30 : -30 }}
+                    animate={{ scale: 1, opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: direction > 0 ? -30 : 30 }}
+                    transition={{ duration: 0.55, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    onError={() => setImgError(true)}
+                  />
+                )}
               </AnimatePresence>
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
@@ -144,26 +189,12 @@ export default function Hero({ id }) {
                     key={i}
                     onClick={() => go(i)}
                     aria-label={`Go to slide ${i + 1}`}
-                    className={`h-2 rounded-full transition-all duration-300 focus:outline-none ${i === current ? "w-7 bg-sky-400" : "w-2 bg-white/55 hover:bg-white/80"
-                      }`}
+                    className={`h-2 rounded-full transition-all duration-300 focus:outline-none ${
+                      i === current ? "w-7 bg-sky-400" : "w-2 bg-white/55 hover:bg-white/80"
+                    }`}
                   />
                 ))}
               </div>
-
-              <button
-                onClick={prev}
-                aria-label="Previous slide"
-                className="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 md:w-9 md:h-9 items-center justify-center bg-white/25 hover:bg-white/50 backdrop-blur-sm rounded-full text-white transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-white/60"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                onClick={next}
-                aria-label="Next slide"
-                className="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 md:w-9 md:h-9 items-center justify-center bg-white/25 hover:bg-white/50 backdrop-blur-sm rounded-full text-white transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-white/60"
-              >
-                <ChevronRight size={18} />
-              </button>
             </div>
 
             <p className="text-center text-slate-400 text-xs mt-2 sm:hidden select-none">
@@ -173,7 +204,6 @@ export default function Hero({ id }) {
 
           {/* ── CONTENT PANEL ── */}
           <div className="flex flex-col items-start text-left order-2 lg:order-1">
-
             <AnimatePresence mode="wait">
               <motion.div
                 key={`badge-${current}`}
@@ -208,8 +238,8 @@ export default function Hero({ id }) {
               </motion.h1>
             </AnimatePresence>
 
-            <div>
-              <p
+            <AnimatePresence mode="wait">
+              <motion.p
                 key={`sub-${current}`}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -217,9 +247,9 @@ export default function Hero({ id }) {
                 transition={{ duration: 0.4, delay: 0.1 }}
                 className="text-slate-500 max-w-xs sm:max-w-sm md:max-w-md mb-6 sm:mb-7 text-sm sm:text-base leading-relaxed"
               >
-                You&apos;ve come to the right place!
-              </p>
-            </div>
+                You've come to the right place!
+              </motion.p>
+            </AnimatePresence>
 
             <div className="flex flex-col xs:flex-row flex-wrap gap-3 w-full sm:w-auto">
               <button
@@ -243,8 +273,9 @@ export default function Hero({ id }) {
                   key={i}
                   onClick={() => go(i)}
                   aria-label={`Go to slide ${i + 1}`}
-                  className={`h-2 rounded-full transition-all duration-300 focus:outline-none ${i === current ? "w-7 bg-sky-500" : "w-2 bg-slate-300 hover:bg-slate-400"
-                    }`}
+                  className={`h-2 rounded-full transition-all duration-300 focus:outline-none ${
+                    i === current ? "w-7 bg-sky-500" : "w-2 bg-slate-300 hover:bg-slate-400"
+                  }`}
                 />
               ))}
             </div>
@@ -255,7 +286,6 @@ export default function Hero({ id }) {
       <Modal open={openQuote} onClose={() => setOpenQuote(false)}>
         <QuoteForm onClose={() => setOpenQuote(false)} />
       </Modal>
-
     </section>
   );
 }

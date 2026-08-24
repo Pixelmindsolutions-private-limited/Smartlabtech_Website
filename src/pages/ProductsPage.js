@@ -286,7 +286,7 @@ const ProductsPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE}/api/products`);
+      const res = await fetch(`${API_BASE}/api/products?limit=200`);
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const json = await res.json();
       // Support both { data: [...] } and { products: [...] } and plain array

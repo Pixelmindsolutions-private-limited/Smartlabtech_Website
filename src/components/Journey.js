@@ -34,7 +34,7 @@ function StatItem({ value, suffix, label, inView, delay }) {
       }}
       className="flex flex-col items-center text-center"
     >
-      <span className="font-serif text-4xl font-black leading-none tracking-tight bg-gradient-to-br from-slate-900 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+    <span className="font-serif text-3xl sm:text-4xl font-black leading-none tracking-tight whitespace-nowrap bg-gradient-to-br from-slate-900 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
         {count}
         {suffix}
       </span>
@@ -62,7 +62,7 @@ export default function JourneySection({ id }) {
     const fetchAchievements = async () => {
       try {
         const res = await axios.get(
-          'https://smartlabtechbackend-p5h6.onrender.com/api/homepage/achievements'
+          'http://187.127.219.43:3000/api/homepage/achievements'
         );
 
         setData(res.data.data);
@@ -232,7 +232,7 @@ export default function JourneySection({ id }) {
             </div>
 
             {/* Stats */}
-            <div className="w-full grid grid-cols-3 gap-2 relative">
+            <div className="w-full grid grid-cols-3 gap-4 relative">
 
               <div className="absolute top-2 bottom-2 left-1/3 w-px bg-gradient-to-b from-transparent via-indigo-200 to-transparent" />
 
@@ -301,13 +301,12 @@ export default function JourneySection({ id }) {
             <div
               className="absolute bottom-0 left-0 h-[3px] transition-all duration-500"
               style={{
-                width: `${
-                  data?.images?.length
+                width: `${data?.images?.length
                     ? ((current + 1) /
-                        data.images.length) *
-                      100
+                      data.images.length) *
+                    100
                     : 0
-                }%`,
+                  }%`,
                 background:
                   'linear-gradient(90deg,#38bdf8,#6366f1)',
               }}

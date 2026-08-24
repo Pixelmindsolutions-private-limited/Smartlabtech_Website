@@ -406,7 +406,7 @@ const ServiceRequestModal = ({ onClose }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://smartlabtechbackend-p5h6.onrender.com/api/servicepage/submit', {
+      const response = await fetch('http://187.127.219.43:3000/api/servicepage/submit', {
         method: 'POST',
         headers: {
           'Authorization': token ? `Bearer ${token}` : '',

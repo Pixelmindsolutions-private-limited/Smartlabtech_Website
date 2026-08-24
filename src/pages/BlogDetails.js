@@ -26,7 +26,7 @@ const BlogDetailsPage = () => {
     const fetchBlog = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`https://smartlabtechbackend-p5h6.onrender.com/api/blogs/slug/${slug}`);
+            const response = await fetch(`http://187.127.219.43:3000/api/blogs/slug/${slug}`);
             const data = await response.json();
 
             if (data.success && data.data) {
@@ -42,7 +42,7 @@ const BlogDetailsPage = () => {
 
     const fetchRelatedPosts = async (category) => {
         try {
-            const response = await fetch(`https://smartlabtechbackend-p5h6.onrender.com/api/blogs/all?category=${category}&limit=3`);
+            const response = await fetch(`http://187.127.219.43:3000/api/blogs/all?category=${category}&limit=3`);
             const data = await response.json();
             if (data.success) {
                 const related = data.data.filter(post => post.slug !== slug).slice(0, 3);

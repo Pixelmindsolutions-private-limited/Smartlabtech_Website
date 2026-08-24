@@ -27,6 +27,33 @@ const getImageUrl = (path) => {
   return `${API_BASE}${path}`;
 };
 
+// Admin-entered descriptions sometimes cram bullet points into one line
+// separated by "•". Render those as a proper list instead of a wall of text.
+const renderDescription = (text) => {
+  if (!text) return null;
+  const points = text.split("•").map((s) => s.trim()).filter(Boolean);
+
+  if (points.length > 1) {
+    return (
+      <ul className="space-y-2.5">
+        {points.map((point, i) => (
+          <li key={i} className="flex items-start gap-2.5 text-slate-600 text-sm sm:text-base leading-relaxed">
+            <span className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+            <span>{point}</span>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  const paragraphs = text.split(/\r?\n\r?\n/).map((s) => s.trim()).filter(Boolean);
+  return paragraphs.map((para, i) => (
+    <p key={i} className="text-slate-600 leading-relaxed text-sm sm:text-base mb-3 last:mb-0">
+      {para}
+    </p>
+  ));
+};
+
 // const FALLBACK_IMAGE = "https://images.pexels.com/photos/2280571/pexels-photo-2280571.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
 
 /* ─── Font Import ─── */
@@ -309,7 +336,7 @@ const ProductDetails = () => {
   /* ─── Fetch all products for related / brand sections ─── */
   const fetchRelated = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/products`);
+      const res = await fetch(`${API_BASE}/api/products?limit=200`);
       if (!res.ok) return;
       const json = await res.json();
       const list = json.data || json.products || (Array.isArray(json) ? json : []);
@@ -408,7 +435,7 @@ const ProductDetails = () => {
 
         {/* ── Hero Section ── */}
         <section className="relative min-h-[90vh] bg-blue-50 flex items-center py-16 sm:py-20">
-          
+
 
           <div className="relative z-10 max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
@@ -452,7 +479,7 @@ const ProductDetails = () => {
                   </div>
                 </div>
 
-                <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 leading-tight text-slate-900">
+                <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold mb-3 sm:mb-4 leading-tight text-slate-900 whitespace-nowrap">
                   <span className="gradient-text">{product.name}</span>
                 </h1>
                 <p className="text-slate-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 leading-relaxed">{product.shortDesc}</p>
@@ -481,12 +508,12 @@ const ProductDetails = () => {
                     <div className={`w-2 h-2 rounded-full ${product.inStock ? 'bg-green-500' : 'bg-yellow-500'} animate-pulse`} />
                     <span className="text-slate-600 text-xs sm:text-sm">{product.inStock ? 'In Stock' : 'Made to Order'}</span>
                   </div>
-                  {product.leadTime && (
+                  {/* {product.leadTime && (
                     <div className="flex items-center gap-2">
                       <Clock size={14} className="text-blue-600" />
                       <span className="text-slate-500 text-xs sm:text-sm">Lead time: <span className="text-slate-700">{product.leadTime}</span></span>
                     </div>
-                  )}
+                  )} */}
                   {product.warranty && (
                     <div className="flex items-center gap-2">
                       <Shield size={14} className="text-blue-600" />
@@ -564,7 +591,7 @@ const ProductDetails = () => {
                     <div className="lg:col-span-2">
                       <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8">
                         <h3 className="font-serif text-xl sm:text-2xl font-bold text-slate-900 mb-4">About This Product</h3>
-                        <p className="text-slate-600 leading-relaxed text-sm sm:text-base">{product.fullDesc}</p>
+                        {renderDescription(product.fullDesc)}
                         {product.applications?.length > 0 && (
                           <div className="mt-6 pt-6 border-t border-slate-100">
                             <h4 className="font-semibold text-slate-800 mb-3 text-sm sm:text-base">Applications</h4>
@@ -585,9 +612,9 @@ const ProductDetails = () => {
                           <Truck size={16} className="text-blue-600" />Shipping & Delivery
                         </h4>
                         <div className="space-y-3 text-sm text-slate-600">
-                          {product.leadTime && (
+                          {/* {product.leadTime && (
                             <div className="flex items-start gap-2"><Clock size={14} className="text-blue-500 mt-0.5 flex-shrink-0" /><span>Lead time: <strong className="text-slate-800">{product.leadTime}</strong></span></div>
-                          )}
+                          )} */}
                           <div className="flex items-start gap-2"><Package size={14} className="text-blue-500 mt-0.5 flex-shrink-0" /><span>Professional packaging with foam inserts</span></div>
                           <div className="flex items-start gap-2"><Shield size={14} className="text-blue-500 mt-0.5 flex-shrink-0" /><span>Fully insured shipping</span></div>
                           <div className="flex items-start gap-2"><Award size={14} className="text-blue-500 mt-0.5 flex-shrink-0" /><span>Factory calibration certificate included</span></div>

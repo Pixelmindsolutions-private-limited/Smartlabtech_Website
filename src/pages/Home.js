@@ -81,22 +81,6 @@ export default function Home() {
     });
   }, []);
 
-  // Intro bounce — scrolls down then back to top
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      smoothScroll(400, 800);
-      setTimeout(() => smoothScroll(0, 900), 1000); // Increased delay slightly
-    }, 400);
-
-    return () => {
-      clearTimeout(timer);
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        isAnimating.current = false;
-      }
-    };
-  }, [smoothScroll]);
-
   // Hash-based smooth navigation
   useEffect(() => {
     const handleHashChange = (e) => {

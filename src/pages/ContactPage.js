@@ -42,7 +42,7 @@ function useContactHero() {
     const fetchHero = async () => {
       setLoading(true);
       try {
-        const res = await fetch('https://smartlabtechbackend-p5h6.onrender.com/api/contacts/hero');
+        const res = await fetch('http://187.127.219.43:3000/api/contacts/hero');
         if (res.status === 404) { setHero(null); return; }
         const json = await res.json();
         if (json.success && json.data && json.data.isActive) {
@@ -69,7 +69,7 @@ function useSubjects() {
     const fetch_ = async () => {
       setLoading(true);
       try {
-        const res = await fetch('https://smartlabtechbackend-p5h6.onrender.com/api/contacts/subjects');
+        const res = await fetch('http://187.127.219.43:3000/api/contacts/subjects');
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
           setSubjects(json.data.filter(s => s.isActive));
@@ -98,7 +98,7 @@ function useContactInfo() {
     const fetchContactInfo = async () => {
       setLoading(true);
       try {
-        const res = await fetch('https://smartlabtechbackend-p5h6.onrender.com/api/contact-info');
+        const res = await fetch('http://187.127.219.43:3000/api/contact-info');
         const json = await res.json();
         if (json.success && json.data) {
           setContactInfo({
@@ -123,7 +123,7 @@ function useContactInfo() {
 
 /* ─── Shared submit fn ──────────────────────────────────────────────────── */
 async function submitContact(payload) {
-  const res = await fetch('https://smartlabtechbackend-p5h6.onrender.com/api/contacts/submit', {
+  const res = await fetch('http://187.127.219.43:3000/api/contacts/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
