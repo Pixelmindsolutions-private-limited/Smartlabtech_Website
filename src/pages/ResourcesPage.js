@@ -255,12 +255,12 @@ const ResourcesPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.1 }}
             className="text-4xl sm:text-5xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.1] mb-6 text-center"
-            style={{ fontFamily: "'Playfair Display', serif", letterSpacing: '-0.02em' }}
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              letterSpacing: '-0.02em'
+            }}
           >
-            {hero.title || "Resources"}{' '}
-            <span className="bg-gradient-to-r from-sky-300 to-blue-300 bg-clip-text text-transparent">
-              Library
-            </span>
+            {hero.title || "Resources"}
           </motion.h1>
 
           <motion.p
