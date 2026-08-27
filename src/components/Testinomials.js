@@ -76,6 +76,7 @@ export default function Testimonials({ id }) {
   const [paused, setPaused] = useState(false);
 
   const [testimonialData, setTestimonialData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // ================= FETCH API =================
   useEffect(() => {
@@ -85,20 +86,37 @@ export default function Testimonials({ id }) {
           'http://187.127.219.43:3000/api/homepage/testimonials'
         );
 
-        setTestimonialData(res.data.data);
+        const data = res.data?.data;
+        const activeTestimonials = Array.isArray(data?.testimonials)
+          ? data.testimonials.filter(
+              (testimonial) => testimonial.isActive === true
+            )
+          : [];
+
+        setTestimonialData({
+          ...data,
+          testimonials: activeTestimonials,
+        });
       } catch (error) {
         console.error('Testimonials API Error:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchTestimonials();
   }, []);
 
-  // Duplicate for infinite marquee
+  const activeTestimonials = testimonialData?.testimonials || [];
+
   const doubled = [
-    ...(testimonialData?.testimonials || []),
-    ...(testimonialData?.testimonials || []),
+    ...activeTestimonials,
+    ...activeTestimonials,
   ];
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <>
@@ -126,7 +144,7 @@ export default function Testimonials({ id }) {
         <div className="max-w-8xl mx-auto px-4 sm:px-8 lg:px-20">
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 1, y: 0 }}
             animate={
               isInView
                 ? { opacity: 1, y: 0 }
@@ -170,32 +188,38 @@ export default function Testimonials({ id }) {
           </motion.div>
         </div>
 
-        {/* Marquee */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={
-            isInView
-              ? { opacity: 1, y: 0 }
-              : {}
-          }
-          transition={{
-            duration: 0.7,
-            delay: 0.15,
-          }}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          className="overflow-hidden"
-        >
-          <div
-            className={`flex gap-5 w-max marquee-track ${
-              paused ? 'paused' : ''
-            }`}
+        {/* ✅ MARQUEE - SIRF ACTIVE TESTIMONIALS SHOW KARO */}
+        {activeTestimonials.length > 0 ? (
+          <motion.div
+            initial={{ opacity: 1, y: 0 }}
+            animate={
+              isInView
+                ? { opacity: 1, y: 0 }
+                : {}
+            }
+            transition={{
+              duration: 0.7,
+              delay: 0.15,
+            }}
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            className="overflow-hidden"
           >
-            {doubled.map((t, i) => (
-              <Card key={i} t={t} />
-            ))}
+            <div
+              className={`flex gap-5 w-max marquee-track ${
+                paused ? 'paused' : ''
+              }`}
+            >
+              {doubled.map((t, i) => (
+                <Card key={`${t._id || 'testimonial'}-${i}`} t={t} />
+              ))}
+            </div>
+          </motion.div>
+        ) : (
+          <div className="text-center text-slate-500 py-10">
+            No active testimonials available
           </div>
-        </motion.div>
+        )}
 
         {/* Fade Edges */}
         <div className="pointer-events-none absolute top-0 bottom-0 left-0 w-16 sm:w-28 bg-gradient-to-r from-slate-50 to-transparent z-10" />

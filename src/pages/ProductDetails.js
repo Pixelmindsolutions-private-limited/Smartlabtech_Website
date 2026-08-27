@@ -18,7 +18,7 @@ import { QuoteForm } from "../modal/QuoteForm";
 import { Modal } from "../modal/Modal";
 import { QueryForm } from "../modal/QueryForm";
 
-const API_BASE = "https://smartlabtechbackend-p5h6.onrender.com";
+const API_BASE = "http://187.127.219.43:3000";
 
 /* ─── Helpers ─── */
 const getImageUrl = (path) => {

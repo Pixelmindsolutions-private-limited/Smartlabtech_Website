@@ -18,6 +18,25 @@ export default function Home() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Scroll to top on component mount/reload
+  useEffect(() => {
+    // Scroll to top immediately
+    window.scrollTo({
+      top: 0,
+      behavior: 'instant'
+    });
+
+    // Small delay to ensure it works even if browser tries to restore position
+    const timer = setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsModalOpen(true);
@@ -61,7 +80,7 @@ export default function Home() {
 
         window.scrollTo({
           top: start + change * easedProgress,
-          behavior: 'auto' // Use 'auto' instead of 'instant' for compatibility
+          behavior: 'auto'
         });
 
         if (progress < 1) {
@@ -110,7 +129,7 @@ export default function Home() {
           const pos = element.getBoundingClientRect().top + window.scrollY - offset;
           setTimeout(() => {
             smoothScroll(pos, 900);
-          }, 300); // Longer delay for initial load
+          }, 300);
         }
       }
     };
