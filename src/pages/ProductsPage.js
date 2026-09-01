@@ -14,7 +14,7 @@ import Footer from "../components/Footer";
 import fallbackImage from '../assets/fallbackimage.png';
 import { Helmet } from "react-helmet";
 
-const API_BASE = "http://187.127.219.43:3000";
+const API_BASE = "https://api.smartlabtech.com";
 
 // Animation variants
 const fadeUp = {

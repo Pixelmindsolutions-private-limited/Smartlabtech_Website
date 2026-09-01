@@ -31,7 +31,7 @@ export default function Footer({ id }) {
 
   const fetchFooter = async () => {
     try {
-      const response = await fetch('http://187.127.219.43:3000/api/footer');
+      const response = await fetch('https://api.smartlabtech.com/api/footer');
       const data = await response.json();
 
       if (data.success && data.data) {

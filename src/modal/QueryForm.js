@@ -94,7 +94,7 @@ export function QueryForm({ onClose }) {
     const fetchSubjects = async () => {
       setSubjectsLoading(true);
       try {
-        const res = await fetch('http://187.127.219.43:3000/api/contacts/subjects');
+        const res = await fetch('https://api.smartlabtech.com/api/contacts/subjects');
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
           setSubjects(
@@ -139,7 +139,7 @@ export function QueryForm({ onClose }) {
 
     try {
       const res = await fetch(
-        "http://187.127.219.43:3000/api/contacts/submit",
+        "https://api.smartlabtech.com/api/contacts/submit",
         {
           method: "POST",
           headers: {

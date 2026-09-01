@@ -24,10 +24,8 @@ export default function ServiceModal({ isOpen, onClose }) {
       setLoading(true);
 
       const response = await axios.get(
-        "http://187.127.219.43:3000/api/servicepage/popup"
+        "https://api.smartlabtech.com/api/servicepage/popup"
       );
-
-      console.log("Popup API:", response.data);
 
       if (response.data?.data?.isActive === true) {
         setPopupData(response.data.data);

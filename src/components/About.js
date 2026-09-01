@@ -25,7 +25,7 @@ export default function About({ id }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://187.127.219.43:3000/api/homepage/about")
+    fetch("https://api.smartlabtech.com/api/homepage/about")
       .then((res) => res.json())
       .then((json) => {
         if (json.success && json.data) {

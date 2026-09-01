@@ -33,7 +33,7 @@ function useContactInfo() {
     const fetchContactInfo = async () => {
       setLoading(true);
       try {
-        const res = await fetch('http://187.127.219.43:3000/api/contact-info');
+        const res = await fetch('https://api.smartlabtech.com/api/contact-info');
         const json = await res.json();
         if (json.success && json.data) {
           setContactInfo({
@@ -74,7 +74,7 @@ export default function Contact({ id }) {
     const fetchSubjects = async () => {
       setSubjectsLoading(true);
       try {
-        const res = await fetch('http://187.127.219.43:3000/api/contacts/subjects');
+        const res = await fetch('https://api.smartlabtech.com/api/contacts/subjects');
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
           setSubjects(json.data.filter(s => s.isActive).sort((a, b) => a.sortOrder - b.sortOrder));
@@ -104,7 +104,7 @@ export default function Contact({ id }) {
     setLoading(true);
     setApiError('');
     try {
-      const res = await fetch('http://187.127.219.43:3000/api/contacts/submit', {
+      const res = await fetch('https://api.smartlabtech.com/api/contacts/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -83,7 +83,7 @@ export default function Testimonials({ id }) {
     const fetchTestimonials = async () => {
       try {
         const res = await axios.get(
-          'http://187.127.219.43:3000/api/homepage/testimonials'
+          'https://api.smartlabtech.com/api/homepage/testimonials'
         );
 
         const data = res.data?.data;

@@ -79,7 +79,7 @@ const ServicesPage = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://187.127.219.43:3000/api/servicepage', {
+      const response = await fetch('https://api.smartlabtech.com/api/servicepage', {
         headers: {
           'Authorization': token ? `Bearer ${token}` : '',
           'Content-Type': 'application/json'
