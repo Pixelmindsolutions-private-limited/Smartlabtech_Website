@@ -22,6 +22,7 @@ import CookiePolicy from './Policies/CookiePolicy.js';
 import SmartApplicationLab from './pages/SmartApplicationLab.js';
 import NotFound from './views/PageNotFound.js';
 import CookieConsent from './components/CookieConsent.js';
+import PrincipleDetails from './pages/PrincipleDetails.js';
 
 const App = () => {
   return (
@@ -44,6 +45,8 @@ const App = () => {
         <Route path='/smart-application-lab' element={<SmartApplicationLab />} />
         <Route path='/search' element={<SearchResults />} />
         <Route path='/admin' element={<AdminPanel />} />
+
+        <Route path='/:brandParam' element={<PrincipleDetails />} />
 
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
