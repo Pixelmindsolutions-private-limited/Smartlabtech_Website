@@ -213,7 +213,6 @@ const ContactPage = () => {
   const getPhoneDisplay = () => {
     if (contactLoading) return [{ number: 'Loading...', isPrimary: false }];
     if (contactError || contactInfo.phones.length === 0) {
-      return [{ number: '+91 40 23 774310', isPrimary: true }, { number: '+91 98484 44237', isPrimary: false }];
     }
     return contactInfo.phones.map((phone, idx) => ({ number: phone, isPrimary: idx === 0 }));
   };
@@ -221,7 +220,6 @@ const ContactPage = () => {
   const getEmailDisplay = () => {
     if (contactLoading) return [{ email: 'Loading...', isPrimary: false }];
     if (contactError || contactInfo.emails.length === 0) {
-      return [{ email: 'info@smartlabtech.net', isPrimary: true }, { email: 'support@smartlabtech.net', isPrimary: false }];
     }
     return contactInfo.emails.map((email, idx) => ({ email, isPrimary: idx === 0 }));
   };
@@ -229,7 +227,6 @@ const ContactPage = () => {
   const getAddressDisplay = () => {
     if (contactLoading) return 'Loading address...';
     if (contactError || contactInfo.fullAddresses.length === 0) {
-      return 'Plot #74 and #75/B, Sy #735, Phase-II, S.V. Co-operative Industrial Estate, Balanagar, Hyderabad, Telangana - 500 037, India.';
     }
     return contactInfo.fullAddresses[0];
   };
